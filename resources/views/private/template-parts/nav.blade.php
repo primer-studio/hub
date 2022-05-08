@@ -3,8 +3,8 @@
             <div class="uk-child-width-expand uk-text-center" uk-grid>
                 <div>
                     <p>
-                        <a href="http://keymanager.ir" class="uk-link-reset">
-                            <span><img src="{{ asset('assets/theme/minimal/images/logo.png') }}" alt="" srcset="" style="border-radius: 5px; filter: black; filter: grayscale(20%); width: 35px"></span>
+                        <a href="{{ route('Public > Index') }}" class="uk-link-reset">
+                            <span><ion-icon name="earth" style="vertical-align: middle;"></ion-icon></span>
                             <span class="uk-visible@m">&nbsp;Spider's Nest</span>
                         </a>
                     </p>

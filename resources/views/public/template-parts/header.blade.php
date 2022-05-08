@@ -44,7 +44,7 @@
     }
     #root-container {
         padding: 2px;
-    }    
+    }
     table tbody tr td {
         padding: 3px !important;
         font-size: 13px !important;
@@ -53,7 +53,7 @@
         background: rgb(255 255 255 / 90%)
     }
     .blink {
-        animation: blinker 1.5s cubic-bezier(.5, 0, 1, 1) infinite alternate;  
+        animation: blinker 1.5s cubic-bezier(.5, 0, 1, 1) infinite alternate;
         color: #e74c3c;
     }
     @keyframes blinker {
@@ -62,7 +62,7 @@
     }
     .favicon {
         max-width: 15px;
-        margin-left: 5px;   
+        margin-left: 5px;
         border-radius: 2px;
         /* margin-right: 2%; */
     }
@@ -72,13 +72,30 @@
     .nws-publisher-icon {
         display: none;
     }
+    ul.horizontal-tabs {
+        display: flex;
+        /*flex-wrap: wrap;*/
+        flex-wrap: unset !important;
+        margin-right: -20px;
+        padding: 0;
+        list-style: none;
+        position: relative;
+        white-space: nowrap;
+        overflow-x: auto;
+
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+    }
+    ul.horizontal-tabs::-webkit-scrollbar {
+        display: none;
+    }
 </style>
 <style>
     /* start of desktop styles */
 
     @media screen and (max-width: 991px) {
     /* start of large tablet styles */
-        
+
     }
 
     @media screen and (max-width: 767px) {

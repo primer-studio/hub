@@ -13,23 +13,26 @@ use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
-    public function Index() {
+    public function Index()
+    {
         $statics = [
             'topday_news_count' => News::whereDate('created_at', Carbon::today())->get()->count(),
         ];
         $top_hits = News::orderByDesc('hits')->take(10)->get();
-        return view('private.dashboard.index', compact(['statics','top_hits']));
+        return view('private.dashboard.index', compact(['statics', 'top_hits']));
     }
 
-    public function ManagePublisher() {
+    public function ManagePublisher()
+    {
         $publishers = Publisher::latest()->paginate(20);
         return view('private.publisher.manage', compact(['publishers']));
     }
 
-    public function AddPublisher(Request $request) {
+    public function AddPublisher(Request $request)
+    {
+        $services = Service::all();
         if ($request->isMethod('get')) {
-            $services = Service::all();
-            return view('private.publisher.add');
+            return view('private.publisher.add', compact(['services']));
         } elseif ($request->isMethod('post')) {
 
             $request->validate([
@@ -49,13 +52,14 @@ class AdminController extends Controller
             session(['message' => 'Publisher added.']);
             return redirect(route('Admin > Dashboard > Publishers > Edit', $publisher->id));
 
-            
+
         } else {
             return abort('cannot proccess request.');
         }
     }
 
-    public function EditPublisher(Request $request, $id) {
+    public function EditPublisher(Request $request, $id)
+    {
         if ($request->isMethod('get')) {
             $services = Service::all();
             $publisher = Publisher::findOrFail($id);
@@ -69,12 +73,12 @@ class AdminController extends Controller
             ]);
 
             $publisher = Publisher::findOrFail($id)
-                        ->update([
-                            'name' => $request['name'],
-                            'website' => $request['website'],
-                            'feeds' => $request['feeds'],
-                            'avatar' => $request['avatar']
-                        ]);
+                ->update([
+                    'name' => $request['name'],
+                    'website' => $request['website'],
+                    'feeds' => $request['feeds'],
+                    'avatar' => $request['avatar']
+                ]);
             session(['message' => 'Publisher updated.']);
             return back();
         } else {

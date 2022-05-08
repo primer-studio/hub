@@ -36,7 +36,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/update', [App\Http\Controllers\NewsController::class, 'XMLrender'])->name('Jobs > Update > News');
 
         /** ------- Tests ------- **/
-        Route::get('/streams', [App\Http\Controllers\NewsController::class, 'makeStreams'])->name('Tests > Show > Streams');
+
     });
 });
 
@@ -44,3 +44,9 @@ Route::middleware(['auth'])->group(function () {
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
 // })->middleware(['auth'])->name('dashboard');
+
+Route::get('sample-test', function() {
+    $stream = file_get_contents('https://www.yjc.news/fa/rss/5/99');
+    $parser = simplexml_load_string($stream);
+    return dd($parser);
+});
