@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\News;
 use App\Models\Publisher;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -55,6 +56,7 @@ class NewsController extends Controller
     public function UpdateDataSet($data)
     {
         echo "Pushing dataset to DB ...\r\n";
+        $duplicates_count = 0;
         foreach ($data as $content) {
             // $stream = New News;
             // $stream->publisher_id = $content['publisher_id'];
@@ -63,16 +65,26 @@ class NewsController extends Controller
             // $stream->url = $content['url'];
             // $stream->timestamp = $content['timestamp'];
             // $stream->save();
-
-            News::updateOrCreate([
+            $q = News::where([
                 'publisher_id' => $content['publisher_id'],
                 'service_id' => $content['service_id'],
                 'title' => $content['title'],
                 'url' => $content['url'],
-                'timestamp' => $content['timestamp'],
-            ]);
+            ])->count();
+            if (!$q) {
+                News::updateOrCreate([
+                    'publisher_id' => $content['publisher_id'],
+                    'service_id' => $content['service_id'],
+                    'title' => $content['title'],
+                    'url' => $content['url'],
+                    'timestamp' => $content['timestamp'],
+                ]);
+            } else {
+                $duplicates_count += 1;
+            }
         }
 
+        echo "$duplicates_count duplicate entries ignored.\r\n";
         echo count($data) . " items [updated/inserted] to DB.\r\n";
     }
 
@@ -124,8 +136,8 @@ class NewsController extends Controller
                     echo "Feed parsed.\r\n";
                 } catch (\Exception $exception) {
                     Storage::disk('local')
-                        ->append('/logs/'.date('Y-m-d').'/'.$streams[$owner]['publisher_id'].'-fetch-fail-attempt.log'
-                            , time().' - '.date('H:i:s').' - cant fetch feed: '.$feed['url'].' -> '.$exception->getMessage() );
+                        ->append('/logs/' . date('Y-m-d') . '/' . $streams[$owner]['publisher_id'] . '-fetch-fail-attempt.log'
+                            , time() . ' - ' . date('H:i:s') . ' - cant fetch feed: ' . $feed['url'] . ' -> ' . $exception->getMessage());
                     echo "Can't parse feed.\r\n";
                     echo $exception->getMessage() . "\r\n";
                     echo "passing feed ...\r\n";
@@ -148,8 +160,86 @@ class NewsController extends Controller
         return view('public.news.iframe', compact(['news']));
     }
 
-    public function RealTime()
+    public function RealTime(Request $request, $order, $count)
     {
-        //
+        $news = News::where('publisher_id', '!=', 1)->orderByDesc($order)->take($count)->get();
+        $response = '';
+        $c = 1;
+        foreach ($news as $item) {
+            $l = route('Public > Show > News', $item->id);
+            $t = $item->title;
+            $p = $item->publisher->name;
+            $class = ($c == 1) ? 'uk-text-bold' : null ;
+            $style = ($c == 1) ? 'border-right: 3px solid #4c8bf540; padding-right: 3px' : null ;
+            $response .= "<li class='$class' style='$style'><a class='uk-link-reset' href='$l' target='_blank' title='$p - $t'>$t</a></li>";
+            $c ++;
+        }
+        return $response;
+    }
+
+    public function RemoveDuplicates()
+    {
+        /**
+         * query: SELECT title, publisher_id, timestamp, COUNT(*) c FROM `news` GROUP BY title HAVING c > 1 ORDER BY timestamp DESC
+         * note: this query wont work till the mysql engine 'strict' => true, changes to false in config/database.php
+         * note: consider setting mysql strict to flase may create security issues.
+         */
+//        $duplicates = News::whereDate('created_at', Carbon::today())
+//                            ->select([
+//                                'title',
+//                                'publisher_id',
+//                                'timestamp',
+//                                DB::raw('COUNT(*) as `c`')
+//                            ])
+//                            ->groupBy('title')
+//                            ->having('c', '>', 1)
+//                            ->orderByDesc('timestamp')
+//                            ->get();
+        /**
+         * note: because top code block has issues, use this type of query,
+         */
+
+        echo "Fetching duplicate entries created today ...\r\n";
+        $duplicates = DB::table('news')
+            ->select('title', DB::raw('COUNT(*) as `count`'))
+            ->whereDate('created_at', Carbon::today())
+            ->groupBy('title')
+            ->havingRaw('COUNT(*) > 1')
+            ->get();
+        echo "Founded " . count($duplicates) . " duplicate rows ...\r\n.";
+
+        if (count($duplicates) > 0) {
+            echo "Process to removing duplicate items ...\r\n";
+            $list = [];
+            $should_delete = [];
+            foreach ($duplicates as $duplicate) {
+                $tmp = News::where('title', $duplicate->title)->orderByDesc('publisher_id')->orderByDesc('timestamp')->select(['id', 'publisher_id', 'timestamp', 'title'])->get();
+                $list[$duplicate->title] = $tmp->groupBy('publisher_id');
+            }
+            foreach($list as $items) {
+                foreach ($items as $publisher_id => $news) {
+                    if (count($items[$publisher_id]) > 1) {
+                        $should_delete[] = $news;
+                    }
+                }
+            }
+            foreach ($should_delete as $news) {
+                $c = 1;
+                foreach ($news as $item) {
+
+                    while ($c > 1) {
+                        $index = News::find($item->id);
+                        if (!is_null($index)) {
+                            $index->delete();
+                            echo "id:" . $item->id . " removed.\r\n";
+                        }
+                    }
+                    $c ++;
+                }
+            }
+            echo "Duplicate entries removed.\r\n";
+        } else {
+            echo "Process stopped due to results count.";
+        }
     }
 }

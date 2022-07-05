@@ -1,5 +1,13 @@
 <div style="background: #1b1919; padding: 10px !important" class="uk-section uk-padding-remove">
-<p class="uk-text-meta fa-num" style="color: white; margin-right: 2%">07 بهمن، 1400</p>
+    @php
+        $jdate = new Verta();
+        $jdate = verta();
+        $jdate = $jdate->format('%d %B، %Y');
+        $en = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+        $fa = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+        $jdate = str_replace($en, $fa, $jdate);
+    @endphp
+    <p class="uk-text-meta fa-num" style="color: white; margin-right: 2%">{{ $jdate }}</p>
 </div>
 <nav id="nav" class="uk-navbar-container" uk-navbar>
 

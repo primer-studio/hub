@@ -35,7 +35,7 @@
                 </div>
                 <div>
                     <p uk-tooltip="title: Add service; pos: top">
-                        <a href="http://keymanager.ir/add/service" class="uk-link-reset">
+                        <a href="{{ route('Admin > Dashboard > Services > Manage') }}" class="uk-link-reset">
                             <span uk-icon="plus-circle"></span>
                             <span class="uk-visible@m">&nbsp;Service</span>
                         </a>

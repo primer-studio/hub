@@ -22,6 +22,7 @@ class AdminController extends Controller
         return view('private.dashboard.index', compact(['statics', 'top_hits']));
     }
 
+    /** ------- Publishers ------- **/
     public function ManagePublisher()
     {
         $publishers = Publisher::latest()->paginate(20);
@@ -84,5 +85,22 @@ class AdminController extends Controller
         } else {
             return abort('cannot proccess request.');
         }
+    }
+
+    /** ------- Services ------- **/
+    public function ManageService()
+    {
+        $services = Service::latest()->paginate(20);
+        return view('private.service.manage', compact(['services']));
+    }
+
+    public function AddService(Request $request)
+    {
+        // should extends AddPublisher() method format.
+    }
+
+    public function EditService(Request $request, $id)
+    {
+        // should extends EditPublisher() method format.
     }
 }

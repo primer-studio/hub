@@ -24,8 +24,8 @@
         src: url("/assets/theme/minimal/fonts/Vazir-Medium.eot?#iefix") format("embedded-opentype"), url("/assets/theme/minimal/fonts/Vazir-Medium.ttf") format("truetype");
         font-weight: 200;
     }
-    * {
-        font-family: 'Vazir';
+    *:not(i) {
+        font-family: 'Vazir' !important;
         color: #2c3e50;
     }
     body {
@@ -35,6 +35,9 @@
         /* background: #34495e; */
         background: #e9e9e9;
         min-height: 100vh;
+    }
+    .uk-grid {
+        margin: auto !important;
     }
     #nav {
         padding: 0 3%;
@@ -88,6 +91,16 @@
     }
     ul.horizontal-tabs::-webkit-scrollbar {
         display: none;
+    }
+
+    .text-overflow {
+        width: 70%; /* the element needs a fixed width (in px, em, %, etc) */
+        overflow: hidden; /* make sure it hides the content that overflows */
+        white-space: nowrap; /* don't break the line */
+        text-overflow: ellipsis; /* give the beautiful '...' effect */
+    }
+    .text-overflow-parent {
+        padding: 12px;
     }
 </style>
 <style>

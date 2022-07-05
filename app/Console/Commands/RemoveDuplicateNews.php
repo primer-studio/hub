@@ -3,23 +3,22 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Models\Publisher;
 
-class UpdateNews extends Command
+class RemoveDuplicateNews extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'news:update';
+    protected $signature = 'news:unique';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Update publishers news.';
+    protected $description = 'Delete duplicate news.';
 
     /**
      * Create a new command instance.
@@ -39,7 +38,7 @@ class UpdateNews extends Command
     public function handle()
     {
         $job = new \App\Http\Controllers\NewsController;
-        $job->XMLrender();
+        $job->RemoveDuplicates();
         echo "Renewing the system cache ...\r\n";
         $status = \Artisan::call('cache:clear');
         echo "System cache is fresh now.\r\n";

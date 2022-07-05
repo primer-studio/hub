@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use App\Models\News;
@@ -12,10 +13,9 @@ class HomeController extends Controller
 {
     public function CreateDataset()
     {
-        if ( Cache::has('index_dataset') ) {
+        if (Cache::has('index_dataset')) {
             $dataset = Cache::get('index_dataset');
-        }
-        else {
+        } else {
             $dataset = [
                 'economical' => News::where('publisher_id', '!=', 1)->where('service_id', 1)->orderByDesc('timestamp')->limit(20)->get(),
                 'political' => News::where('publisher_id', '!=', 1)->where('service_id', 2)->orderByDesc('timestamp')->limit(20)->get(),
@@ -23,7 +23,23 @@ class HomeController extends Controller
                 'cultural' => News::where('publisher_id', '!=', 1)->where('service_id', 4)->orderByDesc('timestamp')->limit(20)->get(),
                 'sport' => News::where('publisher_id', '!=', 1)->where('service_id', 5)->orderByDesc('timestamp')->limit(20)->get(),
             ];
-            $this->CacheHandler('index_dataset', $dataset, 60*2);
+            $this->CacheHandler('index_dataset', $dataset, 60 * 2);
+
+        }
+        return $dataset;
+    }
+
+    public function CreateTabset()
+    {
+        if (Cache::has('index_tabset')) {
+            $dataset = Cache::get('index_tabset');
+        } else {
+            $dataset = [
+                'today_hits' => News::where('publisher_id', '!=', 1)->whereDate('created_at', Carbon::today())->orderByDesc('hits')->limit(20)->get(),
+                'suggested' => News::where('publisher_id', '!=', 1)->whereDate('created_at', Carbon::today())->orderBy('hits')->limit(20)->get(),
+                'recent' => News::where('publisher_id', '!=', 1)->whereDate('created_at', Carbon::today())->orderByDesc('timestamp')->limit(20)->get(),
+            ];
+            $this->CacheHandler('index_tabset', $dataset, 60 * 2);
 
         }
         return $dataset;
@@ -39,5 +55,10 @@ class HomeController extends Controller
         $dataset = $this->CreateDataset();
         $services = Service::all();
         return view('public.home.index', compact(['dataset', 'services']));
+    }
+
+    public function RealTime()
+    {
+        return view('public.realtime.index');
     }
 }
