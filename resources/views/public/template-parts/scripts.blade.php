@@ -10,7 +10,7 @@
                     container.innerHTML = xhttp.responseText;
                 }
             };
-            xhttp.open("GET", "http://localhost:8000/real-time/news/timestamp/100", true);
+            xhttp.open("GET", "{{ Route('Real Time > News', ['timestamp', 100]); }}", true);
             xhttp.send();
         }
     </script>
