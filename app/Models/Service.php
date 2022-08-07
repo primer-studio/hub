@@ -8,10 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Service extends Model
 {
-    use HasFactory;
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     public function news() {
         return $this->hasMany(News::class);
+    }
+    public function repository() {
+        return $this->hasMany(Repository::class);
     }
 }

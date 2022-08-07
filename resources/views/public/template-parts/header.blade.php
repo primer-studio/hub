@@ -102,6 +102,37 @@
     .text-overflow-parent {
         padding: 12px;
     }
+    .item-counter {
+        display: inline-table;
+        border-radius: 3px;
+        padding: 0px 2px;
+        width: 15px;
+        height: 15px;
+        text-align: center;
+        vertical-align: middle;
+        margin-left: 5px;
+    }
+
+    .item-counter span {
+        color: #ffffff;
+    }
+
+    /* https://i.pinimg.com/736x/18/b7/3e/18b73ed41c2d29c43808f1c064d81051.jpg */
+    .item-counter-rank-1 {
+        background: #194569;
+    }
+    .item-counter-rank-2 {
+        background: #5F84A2;
+    }
+    .item-counter-rank-3 {
+        background: #91AEC4;
+    }
+    .item-counter-rank-4 {
+        background: #B7D0E1;
+    }
+    .item-counter-rank-5 {
+        background: #CADEE0;
+    }
 </style>
 <style>
     /* start of desktop styles */

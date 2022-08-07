@@ -1,0 +1,12 @@
+{
+    "cron": [
+      "* * * * * cd /var/www/html && php artisan news:update",
+      "*/2 * * * * cd /var/www/html && php artisan news:legal"
+    ],
+    "disks": [
+        {
+          "name": "rss-service-disk",
+          "mountTo": "storage"
+        }
+      ]
+}

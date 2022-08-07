@@ -62,3 +62,4 @@ Route::middleware(['auth'])->group(function () {
 //});
 
 //Route::get('/duplicates', [\App\Http\Controllers\NewsController::class, 'RemoveDuplicates']);
+Route::get('test', [\App\Http\Controllers\NewsController::class, 'XMLrender']);

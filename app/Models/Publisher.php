@@ -15,10 +15,15 @@ class Publisher extends Model
         'name',
         'website',
         'feeds',
+        'settings',
         'avatar',
     ];
 
     public function news() {
         return $this->hasMany(News::class);
+    }
+
+    public function getSettings($key) {
+        return (is_null($this->settings)) ? null : (json_decode($this->settings))->$key;
     }
 }

@@ -2,24 +2,26 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Controllers\LogController;
+use App\Models\Log;
+use App\Models\News;
 use Illuminate\Console\Command;
-use App\Models\Publisher;
 
-class UpdateNews extends Command
+class LegalRules extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'news:update';
+    protected $signature = 'news:legal';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Update publishers news.';
+    protected $description = 'Check news for illegal words, files & etc.';
 
     /**
      * Create a new command instance.
@@ -39,10 +41,10 @@ class UpdateNews extends Command
     public function handle()
     {
         $log_handle = new \App\Http\Controllers\LogController();
-        $log = $log_handle->AddLog('{UpdateNews.php}:info', 'Running `news:update` command.');
+        $log = $log_handle->AddLog('{LegalRules.php}:info', 'Running `news:legal` command.');
 
         $job = new \App\Http\Controllers\NewsController;
-        $job->XMLrender();
+        $job->LegalRules();
         $this->comment("Renewing the system cache ...");
         $status = \Artisan::call('cache:clear');
         $this->question("System cache is fresh now.");

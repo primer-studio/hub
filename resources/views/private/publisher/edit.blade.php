@@ -92,6 +92,45 @@
                 </div>
             </div>
 
+            <div class="uk-grid">
+                <div class="uk-width-1-1@m">
+                    <div class="uk-margin">
+                        <label class="uk-form-label" for="settings_pubdate"><code>RSS PUBDATE key</code></label>
+                        <div class="uk-form-controls">
+                            <input class="uk-input uk-margin-bottom @error('settings_pubdate') uk-form-danger @enderror" id="settings_pubdate" name="settings[pubdate]"
+                                    type="text" placeholder="RSS PUBDATE key signature" value="{{ $publisher->getSettings('pubdate') }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="uk-width-1-1@m">
+                    <div class="uk-margin">
+                        <label class="uk-form-label" for="settings_url"><code>RSS URL key</code></label>
+                        <div class="uk-form-controls">
+                            <input class="uk-input uk-margin-bottom @error('settings_url') uk-form-danger @enderror" id="settings_url" name="settings[url]"
+                                    type="text" placeholder="RSS URL key signature" value="{{ $publisher->getSettings('url') }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="uk-width-1-1@m">
+                    <div class="uk-margin">
+                        <label class="uk-form-label" for="settings_title"><code>RSS TITLE key</code></label>
+                        <div class="uk-form-controls">
+                            <input class="uk-input uk-margin-bottom @error('settings_title') uk-form-danger @enderror" id="settings_title" name="settings[title]"
+                                    type="text" placeholder="RSS url key signature" value="{{ $publisher->getSettings('title') }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="uk-width-1-1@m">
+                    <div class="uk-margin">
+                        <label class="uk-form-label" for="url"><code>RSS DESCRIPTION key</code></label>
+                        <div class="uk-form-controls">
+                            <input class="uk-input uk-margin-bottom @error('settings_description') uk-form-danger @enderror" id="settings_description" name="settings[description]"
+                                    type="text" placeholder="RSS DESCRIPTION key signature" value="{{ $publisher->getSettings('description') }}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="uk-margin">
                 <label class="uk-form-label" for="avatar">Avatar</label>
                 <div class="uk-form-controls">

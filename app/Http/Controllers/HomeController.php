@@ -45,6 +45,18 @@ class HomeController extends Controller
         return $dataset;
     }
 
+    public function CreateHitset()
+    {
+        if (Cache::has('index_hitset')) {
+            $dataset = Cache::get('index_hitset');
+        } else {
+            $dataset = News::where('publisher_id', '!=', 1)->whereDate('created_at', Carbon::today())->orderByDesc('hits')->limit(5)->get();
+            $this->CacheHandler('index_hitset', $dataset, 60 * 2);
+
+        }
+        return $dataset;
+    }
+
     public function CacheHandler($key, $value, $seconds)
     {
         Cache::put($key, $value, $seconds);
@@ -53,8 +65,9 @@ class HomeController extends Controller
     public function Index(Request $request)
     {
         $dataset = $this->CreateDataset();
+        $hitset = $this->CreateHitset();
         $services = Service::all();
-        return view('public.home.index', compact(['dataset', 'services']));
+        return view('public.home.index', compact(['dataset', 'hitset' ,'services']));
     }
 
     public function RealTime()

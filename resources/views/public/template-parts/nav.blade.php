@@ -15,7 +15,7 @@
 
         <ul class="uk-navbar-nav">
             <a href="" class="uk-navbar-item uk-logo"></a>
-            <li class="uk-active"><a href="#">
+            <li class="uk-active"><a href="{{ route('Public > Index') }}">
                 <img id="logo" src="https://smtnews.ir/assets/image/primer-studio-mini.png" alt="{{ env('APP_NAME') }}" srcset="">
                 </a>
             </li>
@@ -29,7 +29,7 @@
                     </ul>
                 </div>
             </li>
-            <li><a href="#"><span>پخش زنده اخبار</span></a></li>
+            <li><a href="{{ route('Public > Real time') }}"><span>پخش زنده اخبار</span></a></li>
         </ul>
 
     </div>

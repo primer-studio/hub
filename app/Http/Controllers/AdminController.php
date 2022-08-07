@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Log;
 use App\Models\News;
 use App\Models\Publisher;
 use App\Models\Service;
@@ -17,6 +18,8 @@ class AdminController extends Controller
     {
         $statics = [
             'topday_news_count' => News::whereDate('created_at', Carbon::today())->get()->count(),
+            'topday_news_hits' => News::whereDate('created_at', Carbon::today())->get()->sum('hits'),
+            'jobs' => Log::whereDate('created_at', Carbon::today())->get(),
         ];
         $top_hits = News::orderByDesc('hits')->take(10)->get();
         return view('private.dashboard.index', compact(['statics', 'top_hits']));
@@ -66,18 +69,19 @@ class AdminController extends Controller
             $publisher = Publisher::findOrFail($id);
             return view('private.publisher.edit', compact(['services', 'publisher']));
         } elseif ($request->isMethod('post')) {
+            // return json_encode($request['settings']);
             $request->validate([
                 'name' => 'required|min:4',
                 'website' => 'required|min:7',
                 'feeds' => 'required|json',
                 'avatar' => 'required|min:13'
             ]);
-
             $publisher = Publisher::findOrFail($id)
                 ->update([
                     'name' => $request['name'],
                     'website' => $request['website'],
                     'feeds' => $request['feeds'],
+                    'settings' => json_encode($request['settings']),
                     'avatar' => $request['avatar']
                 ]);
             session(['message' => 'Publisher updated.']);

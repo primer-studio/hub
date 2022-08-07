@@ -5,7 +5,7 @@
                     <p>
                         <a href="{{ route('Public > Index') }}" class="uk-link-reset">
                             <span><ion-icon name="earth" style="vertical-align: middle;"></ion-icon></span>
-                            <span class="uk-visible@m">&nbsp;Spider's Nest</span>
+                            <span class="uk-visible@m">&nbsp;{{ env('APP_NAME') }}</span>
                         </a>
                     </p>
                 </div>

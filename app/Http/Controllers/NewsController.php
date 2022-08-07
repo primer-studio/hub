@@ -40,6 +40,8 @@ class NewsController extends Controller
         foreach ($streams as $stream) {
             $dataset["{$stream->name}"] = [
                 'publisher_id' => $stream->id,
+                'settings' => $stream->settings,
+                'has_custom_feed_settings' => $this->PublisherSettingParser($stream->id, 'pubdate', false),
                 'feeds' => null,
             ];
             foreach (json_decode($stream->feeds)->feeds as $feed) {
@@ -72,6 +74,7 @@ class NewsController extends Controller
                 'url' => $content['url'],
             ])->count();
             if (!$q) {
+                echo "adding_content: ".$content['title']."<br/>";
                 News::updateOrCreate([
                     'publisher_id' => $content['publisher_id'],
                     'service_id' => $content['service_id'],
@@ -88,36 +91,44 @@ class NewsController extends Controller
         echo count($data) . " items [updated/inserted] to DB.\r\n";
     }
 
+    public function PublisherSettingParser($publisher_id, $input, $default)
+    {
+        $publisher = Publisher::find($publisher_id);
+        return (is_null($publisher))
+            ? false
+            : ((is_null($publisher->settings) || empty($publisher->settings) || !property_exists(json_decode($publisher->settings), $input) || is_null(json_decode($publisher->settings)->$input)) ? $default : json_decode($publisher->settings)->$input);
+    }
+
     public function XMLrender($custom_stream = false)
     {
 
         $streams = ($custom_stream !== false) ? $custom_stream : $this->makeStreams();
-        // return $streams;
+//         return $streams;
 
         $data = [];
         $timestamps = [];
         foreach ($streams as $owner => $stream) {
+            $pid = $stream['publisher_id'];
             foreach ($stream['feeds'] as $feed) {
                 echo "Parsing feed: " . $feed['url'] . " ...\r\n";
                 try {
                     $stream = file_get_contents($feed['url']);
                     $parser = simplexml_load_string($stream);
                     foreach ($parser->channel->item as $item) {
-                        $date = (string )$item->pubDate;
-                        // echo "$date\r\n";
-                        $time = strtotime($item->pubDate);
-                        // echo "$time\r\n";
-                        $link = (string)$item->link;
-                        // echo "$link\r\n";
-                        $title = (string)$item->title;
-                        // echo "$title\r\n";
-                        $text = (string)$item->description;
-                        // echo "<hr>";
+                        $date = (string) $item->pubDate;
+                        $time = strtotime ($item->pubDate);
+                        $link = (string) $item->link;
+                        $title = (string) $item->title;
+                        $text = (string) $item->description;
+
+//                        $date = (string)$item->{$this->PublisherSettingParser($pid, 'pubdate', $item->pubDate)};
+//                        $time = strtotime($item->{$this->PublisherSettingParser($pid, 'pubdate', $item->pubDate)});
+//                        $link = (string)$item->{$this->PublisherSettingParser($pid, 'url', $item->link)};
+//                        $title = (string)$item->{$this->PublisherSettingParser($pid, 'title', $item->title)};
+//                        $text = (string)$item->{$this->PublisherSettingParser($pid, 'description', $item->description)};
 
                         $data[] = [
-                            // 'src' => $owner,
                             'publisher_id' => $streams[$owner]['publisher_id'],
-                            // 'service_id' => $streams[$owner]['service_id'],
                             'service_id' => $feed['service_id'],
                             'timestamp' => $time,
                             'url' => $link,
@@ -125,7 +136,6 @@ class NewsController extends Controller
                         ];
 
                         $timestamps[$time] = [
-                            // 'src' => $owner,
                             'publisher_id' => $streams[$owner]['publisher_id'],
                             'service_id' => $feed['service_id'],
                             'timestamp' => $time,
@@ -137,7 +147,7 @@ class NewsController extends Controller
                 } catch (\Exception $exception) {
                     Storage::disk('local')
                         ->append('/logs/' . date('Y-m-d') . '/' . $streams[$owner]['publisher_id'] . '-fetch-fail-attempt.log'
-                            , time() . ' - ' . date('H:i:s') . ' - cant fetch feed: ' . $feed['url'] . ' -> ' . $exception->getMessage());
+                            , time() . ' - ' . date('H:i:s') . ' - cant fetch feed: ' . $feed['url'] . ' -> ' . $exception->getMessage() . " [File: {$exception->getFile()}  Line: {$exception->getLine()}]");
                     echo "Can't parse feed.\r\n";
                     echo $exception->getMessage() . "\r\n";
                     echo "passing feed ...\r\n";
@@ -148,7 +158,7 @@ class NewsController extends Controller
         krsort($timestamps);
         echo "Dataset sorted.\r\n";
 
-        // return $timestamps;
+//         return $timestamps;
         $this->UpdateDataSet($timestamps);
     }
 
@@ -169,10 +179,10 @@ class NewsController extends Controller
             $l = route('Public > Show > News', $item->id);
             $t = $item->title;
             $p = $item->publisher->name;
-            $class = ($c == 1) ? 'uk-text-bold' : null ;
-            $style = ($c == 1) ? 'border-right: 3px solid #4c8bf540; padding-right: 3px' : null ;
+            $class = ($c == 1) ? 'uk-text-bold' : null;
+            $style = ($c == 1) ? 'border-right: 3px solid #4c8bf540; padding-right: 3px' : null;
             $response .= "<li class='$class' style='$style'><a class='uk-link-reset' href='$l' target='_blank' title='$p - $t'>$t</a></li>";
-            $c ++;
+            $c++;
         }
         return $response;
     }
@@ -216,7 +226,7 @@ class NewsController extends Controller
                 $tmp = News::where('title', $duplicate->title)->orderByDesc('publisher_id')->orderByDesc('timestamp')->select(['id', 'publisher_id', 'timestamp', 'title'])->get();
                 $list[$duplicate->title] = $tmp->groupBy('publisher_id');
             }
-            foreach($list as $items) {
+            foreach ($list as $items) {
                 foreach ($items as $publisher_id => $news) {
                     if (count($items[$publisher_id]) > 1) {
                         $should_delete[] = $news;
@@ -234,12 +244,60 @@ class NewsController extends Controller
                             echo "id:" . $item->id . " removed.\r\n";
                         }
                     }
-                    $c ++;
+                    $c++;
                 }
             }
             echo "Duplicate entries removed.\r\n";
         } else {
             echo "Process stopped due to results count.";
+        }
+    }
+
+    public function Test()
+    {
+        return $this->PublisherSettingParser(11, 'guid', false);
+    }
+
+    public function LegalRules()
+    {
+        $illegal_words = [
+            'دلار',
+            'بلیط'
+        ];
+        $news = News::whereDate('created_at', Carbon::today())->get();
+        foreach ($news as $item) {
+            $main_extra = $item->extra;
+            $extra = '';
+            if (is_null($item->title) || strlen($item->title) == 0 || $item->title == '') {
+                if (strpos($main_extra, 'title:empty') == false) {
+                    $extra .= 'title:empty|';
+                }
+            }
+            if (is_null($item->url)) {
+                if (strpos($main_extra, 'url:empty') == false) {
+                    $extra .= 'url:empty|';
+                }
+            }
+            if (is_null($item->timestamp) || $item->timestamp == 0) {
+                if (strpos($main_extra, 'timestamp:') == false) {
+                    $extra .= 'timestamp:0/empty|';
+                }
+            }
+
+            foreach ($illegal_words as $illegal_item) {
+                if (strpos($item->title, $illegal_item) !== false) {
+                    if (strpos($main_extra, 'title:illegal') == false) {
+                        $extra .= 'title:illegal';
+                    }
+                }
+            }
+
+            if ($extra !== '') {
+                $handle = News::find($item->id);
+                $handle->extra = $main_extra . $extra;
+                $handle->active = 0;
+                $handle->save();
+            }
         }
     }
 }

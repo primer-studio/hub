@@ -3,8 +3,8 @@
     آخرین اخبار روز
 @endsection
 @section('content')
-    <span id="relatime" class="uk-text-meta"></span>
+    @include('public.components.home.top-hits', ['hitset' => $hitset])
     @foreach($dataset as $key => $item)
-        @include('public.components.home.service-card', [ 'dataset' => $dataset[$key], 'cover' => asset("assets/theme/minimal/images/$key.png")])
+        @include('public.components.home.service-card', ['dataset' => $dataset[$key], 'cover' => asset("assets/theme/minimal/images/$key.png")])
     @endforeach
 @endsection

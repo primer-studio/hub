@@ -1,6 +1,7 @@
 <div class="uk-card uk-card-default uk-card-large uk-margin-medium-bottom uk-card-body uk-border-rounded opacity-90">
     <div class="uk-overflow-auto">
-        <img class="uk-border-rounded uk-align-center" src="{{ $cover }}">
+        <!-- <img class="uk-border-rounded uk-align-center" src="{{ $cover }}"> -->
+        <h2 class="uk-title uk-text-default">اخبار {{ $dataset[0]->service->title }}</h2>
         <table class="uk-table uk-table-justify">
             <tbody>
             <?php
@@ -16,7 +17,7 @@
                 </td>
                 <td class="uk-width-large nws-title"><a class="uk-link-reset"
                                                        href="{{ route('Public > Show > News', $item->id) }}"
-                                                       target="_blank">{{ $item['title'] }}</a></td>
+                                                       target="_blank">{!! $item['title'] !!}</a></td>
                 <td class="uk-table-expand nws-publisher"><img class="favicon"
                                                                src="{{ $item->publisher->avatar }}"
                                                                alt="{{ $item->publisher->name }}">{{ $item->publisher->name }}
