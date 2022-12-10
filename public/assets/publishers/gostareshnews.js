@@ -20,7 +20,7 @@ if (service = 'بخش-اقتصاد-۷') {
             container.insertBefore(temp, container.firstChild);
 
             temp.innerHTML = ticker;
-            ticker.insertBefore(temp, ticker.firstChild);
+            newsticker.insertBefore(temp, newsticker.firstChild);
         }
     };
     xhttp.open("GET", "https://feedmark.ir/api/v1/publisher/2/1", true);
