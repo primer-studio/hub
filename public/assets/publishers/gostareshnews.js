@@ -12,15 +12,16 @@ if (service = 'بخش-اقتصاد-۷') {
             title = res[0].title;
             href_one = 'https://feedmark.ir/news/'+res[0].id+'?utm_source=gostareshNews&utm_medium=NewsReadMoreBox&utm_campaign=OwnerNews';
             href_two = 'https://feedmark.ir/news/'+res[0].id+'?utm_source=gostareshNews&utm_medium=NewsTicker&utm_campaign=OwnerNews';
-            // let node = "<div class='l_development_content'><i class='fa fa-window-minimize' aria-hidden='true'></i><a href='"+href+"' target='_blank' title='"+title+"' itemprop='url'>"+title+"</a></div>";
+
             let node = "<div class=''><i class='fa fa-window-minimize' aria-hidden='true'></i><a href='"+href_one+"' target='_blank' title='"+title+"' itemprop='url'>"+title+"</a></div>";
-            let ticker = "<h3 itemprop='headLine'><a href='"+href_two+"' target='_blank' title='"+title+"' itemprop='url'>"+title+"</a></h3>";
             let temp = document.createElement('li');
             temp.innerHTML = node;
             container.insertBefore(temp, container.firstChild);
 
-            temp.innerHTML = ticker;
-            newsticker.insertBefore(temp, newsticker.firstChild);
+            let ticker = "<h3 itemprop='headLine'><a href='"+href_two+"' target='_blank' title='"+title+"' itemprop='url'>"+title+"</a></h3>";
+            let temp_2 = document.createElement('li');
+            temp_2.innerHTML = ticker;
+            newsticker.insertBefore(temp_2, newsticker.firstChild);
         }
     };
     xhttp.open("GET", "https://feedmark.ir/api/v1/publisher/2/1", true);
