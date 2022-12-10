@@ -1,25 +1,6 @@
 <li>
     <div class="uk-overflow-auto">
         <table class="uk-table uk-table-justify">
-            <!-- <caption>آخرین اخبار اقتصادی</caption> -->
-            <!--
-            <thead>
-                <tr>
-                    <th>Table Heading</th>
-                    <th>Table Heading</th>
-                    <th>Table Heading</th>
-                    <th>Table Heading</th>
-                </tr>
-            </thead>
-            <tfoot>
-                <tr>
-                    <td>Table Footer</td>
-                    <td>Table Footer</td>
-                    <td>Table Footer</td>
-                    <td>Table Footer</td>
-                </tr>
-            </tfoot>
-            -->
             <tbody>
             <?php
             foreach ($dataset['economical'] as $item):

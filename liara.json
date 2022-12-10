@@ -1,11 +1,20 @@
 {
+    "platform": "laravel",
+    "app": "ancient-feed",
+    "laravel": {
+        "phpVersion": "8.1",
+        "timezone": "Asia/Tehran",
+        "configCache": true,
+        "routeCache": true
+    },
     "cron": [
-      "* * * * * cd /var/www/html && php artisan news:update",
-      "*/2 * * * * cd /var/www/html && php artisan news:legal"
+        "* * * * * cd /var/www/html && php artisan news:update",
+        "*/2 * * * * cd /var/www/html && php artisan news:legal",
+        "0 2 * * * cd /var/www/html && php artisan tags:clean"
     ],
     "disks": [
         {
-          "name": "rss-service-disk",
+          "name": "ancient-feed-disk",
           "mountTo": "storage"
         }
       ]

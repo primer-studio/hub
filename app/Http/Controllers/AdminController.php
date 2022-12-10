@@ -7,6 +7,7 @@ use App\Models\News;
 use App\Models\Publisher;
 use App\Models\Service;
 
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -106,5 +107,12 @@ class AdminController extends Controller
     public function EditService(Request $request, $id)
     {
         // should extends EditPublisher() method format.
+    }
+
+    /** ------- Services ------- **/
+    public function ManageTags()
+    {
+        $tags = Tag::latest('id')->where('active', 1)->paginate(200);
+        return view('private.tag.manage', compact(['tags']));
     }
 }

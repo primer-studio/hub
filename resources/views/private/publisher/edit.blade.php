@@ -129,6 +129,15 @@
                         </div>
                     </div>
                 </div>
+                <div class="uk-width-1-1@m">
+                    <div class="uk-margin">
+                        <label class="uk-form-label" for="url"><code>RSS MEDIA key</code></label>
+                        <div class="uk-form-controls">
+                            <input class="uk-input uk-margin-bottom @error('settings_media') uk-form-danger @enderror" id="settings_media" name="settings[media]"
+                                   type="text" placeholder="RSS MEDIA key signature" value="{{ $publisher->getSettings('media') }}">
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="uk-margin">

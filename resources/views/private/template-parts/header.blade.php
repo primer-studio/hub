@@ -5,7 +5,6 @@
 <link rel="stylesheet" href="/assets/theme/minimal/css/uikit.min.css" />
 <script src="/assets/theme/minimal/js/uikit.min.js"></script>
 <script src="/assets/theme/minimal/js/uikit-icons.min.js"></script>
-<script src="https://unpkg.com/ionicons@5.2.3/dist/ionicons.js"></script>
 <style>
     @font-face {
         font-family: "Vazir";
@@ -39,7 +38,7 @@
     }
     form * {
         border-radius: 5px !important;
-    } 
+    }
     #nav {
         padding: 0 3%;
     }
@@ -48,7 +47,7 @@
     }
     #root-container {
         padding: 2px;
-    }    
+    }
     table tbody tr td {
         padding: 3px !important;
         font-size: 13px !important;
@@ -57,7 +56,7 @@
         background: rgb(255 255 255 / 90%)
     }
     .blink {
-        animation: blinker 1.5s cubic-bezier(.5, 0, 1, 1) infinite alternate;  
+        animation: blinker 1.5s cubic-bezier(.5, 0, 1, 1) infinite alternate;
         color: #e74c3c;
     }
     @keyframes blinker {
@@ -66,7 +65,7 @@
     }
     .favicon {
         max-width: 15px;
-        margin-left: 5px;   
+        margin-left: 5px;
         border-radius: 2px;
         /* margin-right: 2%; */
     }
@@ -120,5 +119,5 @@
         background: #c23616;
         color: white;
         margin: 0;
-    }   
+    }
 </style>

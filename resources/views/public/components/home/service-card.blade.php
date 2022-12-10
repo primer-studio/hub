@@ -1,6 +1,6 @@
-<div class="uk-card uk-card-default uk-card-large uk-margin-medium-bottom uk-card-body uk-border-rounded opacity-90">
+<div class="uk-card uk-card-default uk-card-large uk-margin-small-bottom uk-card-body uk-border-rounded opacity-90">
     <div class="uk-overflow-auto">
-        <!-- <img class="uk-border-rounded uk-align-center" src="{{ $cover }}"> -->
+{{--        <img class="uk-border-rounded uk-align-center" src="{{ $cover }}">--}}
         <h2 class="uk-title uk-text-default">اخبار {{ $dataset[0]->service->title }}</h2>
         <table class="uk-table uk-table-justify">
             <tbody>
@@ -13,10 +13,10 @@
             ?>
             <tr>
                 <td class="uk-table-shrink nws-ticker">
-                    <ion-icon name="ellipse-outline" class="blink"></ion-icon>
+                    <span class="news-starter"></span>
                 </td>
-                <td class="uk-width-large nws-title"><a class="uk-link-reset"
-                                                       href="{{ route('Public > Show > News', $item->id) }}"
+                <td class="uk-width-large nws-title"><a data-template="news-{{ $item->id }}" class="uk-link-reset news-title"
+                                                       href="{{ route('Public > Show > News', $item->id) }}?utm_source=website&utm_medium=service_card&utm_campaign=default"
                                                        target="_blank">{!! $item['title'] !!}</a></td>
                 <td class="uk-table-expand nws-publisher"><img class="favicon"
                                                                src="{{ $item->publisher->avatar }}"
@@ -27,8 +27,32 @@
                                                                     src="{{ $item->publisher->avatar }}"
                                                                     alt="{{ $item->publisher->name }}"></td>
             </tr>
+            <tr class="uk-hidden@s">
+                <td><span class="news-starter"></span> <span class="uk-text-meta" style="color:#999;">{{ $date }}</span></td>
+                <td></td>
+                <td></td>
+            </tr>
             <?php endforeach; ?>
             </tbody>
         </table>
+
+        {{-- render tooltips --}}
+        <div class="tippy" style="display: none">
+            @foreach ($dataset as $item)
+                @if(!is_null($item->description))
+                    <div class="tippy-desc-wrapper" id="news-{{ $item->id }}" style="border: 1px solid #2c2c2c;">
+                        @php
+                            $description = $item->description;
+                            $description = str_replace('<div', '<p class="tippy-desc"', $description);
+                            $description = str_replace('/div>', '/p>', $description);
+                            $description = str_replace('<p', '<p style="color: #fff !important" ', $description);
+                        @endphp
+                        <p class="tippy-desc">
+                            {!! $description !!}
+                        </p>
+                    </div>
+                @endif
+            @endforeach
+        </div>
     </div>
 </div>

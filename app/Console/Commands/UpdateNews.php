@@ -38,20 +38,11 @@ class UpdateNews extends Command
      */
     public function handle()
     {
-        $log_handle = new \App\Http\Controllers\LogController();
-        $log = $log_handle->AddLog('{UpdateNews.php}:info', 'Running `news:update` command.');
-
         $job = new \App\Http\Controllers\NewsController;
         $job->XMLrender();
         $this->comment("Renewing the system cache ...");
         $status = \Artisan::call('cache:clear');
         $this->question("System cache is fresh now.");
         $this->info("Process takes " . (int) (microtime(true) - LARAVEL_START) . " seconds to exec.");
-
-        $log_handle->UpdateLog($log, [
-            'current_status' => 'finished',
-            'status' => 'finished',
-            'finished_at' => time(),
-        ]);
     }
 }

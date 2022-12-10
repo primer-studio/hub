@@ -24,6 +24,6 @@ class Publisher extends Model
     }
 
     public function getSettings($key) {
-        return (is_null($this->settings)) ? null : (json_decode($this->settings))->$key;
+        return (is_null($this->settings) || !isset((json_decode($this->settings))->$key)) ? null : (json_decode($this->settings))->$key;
     }
 }

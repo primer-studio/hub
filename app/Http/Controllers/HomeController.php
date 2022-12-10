@@ -22,6 +22,8 @@ class HomeController extends Controller
                 'accident' => News::where('publisher_id', '!=', 1)->where('service_id', 3)->orderByDesc('timestamp')->limit(20)->get(),
                 'cultural' => News::where('publisher_id', '!=', 1)->where('service_id', 4)->orderByDesc('timestamp')->limit(20)->get(),
                 'sport' => News::where('publisher_id', '!=', 1)->where('service_id', 5)->orderByDesc('timestamp')->limit(20)->get(),
+                'business' => News::where('publisher_id', '!=', 1)->where('service_id', 6)->orderByDesc('timestamp')->limit(20)->get(),
+                'technology' => News::where('publisher_id', '!=', 1)->where('service_id', 7)->orderByDesc('timestamp')->limit(20)->get(),
             ];
             $this->CacheHandler('index_dataset', $dataset, 60 * 2);
 
@@ -52,6 +54,18 @@ class HomeController extends Controller
         } else {
             $dataset = News::where('publisher_id', '!=', 1)->whereDate('created_at', Carbon::today())->orderByDesc('hits')->limit(5)->get();
             $this->CacheHandler('index_hitset', $dataset, 60 * 2);
+
+        }
+        return $dataset;
+    }
+
+    public function LastFetchedNews()
+    {
+        if (Cache::has('LastFetchedNews')) {
+            $dataset = Cache::get('LastFetchedNews');
+        } else {
+            $dataset = News::where('publisher_id', '!=', 1)->orderByDesc('timestamp')->take(1)->get();
+            $this->CacheHandler('LastFetchedNews', $dataset, 60 * 2);
 
         }
         return $dataset;

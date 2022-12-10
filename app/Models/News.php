@@ -10,9 +10,10 @@ class News extends Model
 {
     use HasFactory;
     use SoftDeletes;
-    
+
     protected $fillable = [
         'title',
+        'description',
         'url',
         'timestamp',
         'publisher_id',
@@ -25,5 +26,18 @@ class News extends Model
 
     public function service() {
         return $this->belongsTo(Service::class);
+    }
+
+    public function tag()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
+
+    /**
+     * Model Helpers
+     * */
+    public function getTags()
+    {
+        return $this->tag->where('active', 1);
     }
 }

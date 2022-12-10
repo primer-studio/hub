@@ -5,36 +5,43 @@ namespace App\Http\Controllers;
 use App\Models\News;
 use App\Models\Publisher;
 
+use App\Models\Tag;
 use Carbon\Carbon;
+use Cviebrock\EloquentSluggable\Services\SlugService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 
 
 class NewsController extends Controller
 {
-    public function TestFeed($url = 'https://www.varzesh3.com/rss/all')
+    public function TestFeed($url = 'https://www.rokna.net/fa/feeds/?p=Y2F0ZWdvcmllcz0yNDU%2C')
     {
-        $publisher = Publisher::where('name', 'test')->first();
-        echo "Creating test dataset ...\r\n";
-        $dataset = [];
-        $dataset["{$publisher->name}"] = [
-            'publisher_id' => $publisher->id,
-            'feeds' => [
-                [
-                    'url' => $url,
-                    'service_id' => 1
-                ]
-            ],
-        ];
-        echo "Test ready.\r\n";
-        $this->XMLrender($dataset);
+        $stream = file_get_contents($url);
+        $parser = simplexml_load_string($stream);
+        foreach ($parser->channel->item as $item) {
+            $date = $item->pubDate;
+            $time = strtotime($item->pubDate);
+            $link = $item->link;
+            $title = (string) $item->title;
+            $text = (string) $item->description;
+
+            $data[] = [
+                'timestamp' => $time,
+                'url' => $link,
+                'title' => $title,
+                'description' => $text,
+            ];
+        }
+        return $data;
     }
 
     public function makeStreams()
     {
         echo "Fetching publishers ...\r\n";
         $streams = Publisher::all()->where('id', '!=', '1');
+//        $streams = $streams->where('id', 9);
         $dataset = [];
         echo "Creating dataset ...\r\n";
         foreach ($streams as $stream) {
@@ -74,14 +81,16 @@ class NewsController extends Controller
                 'url' => $content['url'],
             ])->count();
             if (!$q) {
-                echo "adding_content: ".$content['title']."<br/>";
-                News::updateOrCreate([
+                $news = News::updateOrCreate([
                     'publisher_id' => $content['publisher_id'],
                     'service_id' => $content['service_id'],
                     'title' => $content['title'],
+                    'description' => $content['description'],
                     'url' => $content['url'],
                     'timestamp' => $content['timestamp'],
                 ]);
+                $this->InsertNewsTags($news);
+
             } else {
                 $duplicates_count += 1;
             }
@@ -108,39 +117,51 @@ class NewsController extends Controller
         $data = [];
         $timestamps = [];
         foreach ($streams as $owner => $stream) {
+            if (!is_null($stream['settings'])) {
+                $feed_settings = json_decode($stream['settings']);
+                if (!is_null($feed_settings)) {
+                    $pubDate_key = $feed_settings->pubdate;
+                    $link_key = $feed_settings->url;
+                    $title_key = $feed_settings->title;
+                    $text_key = $feed_settings->description;
+                }
+            }
+
             $pid = $stream['publisher_id'];
             foreach ($stream['feeds'] as $feed) {
                 echo "Parsing feed: " . $feed['url'] . " ...\r\n";
                 try {
-                    $stream = file_get_contents($feed['url']);
+                    $arrContextOptions = [
+                        "ssl"=> [
+                            "verify_peer"=>false,
+                            "verify_peer_name"=>false,
+                        ]
+                    ];
+                    $stream = file_get_contents($feed['url'], false, stream_context_create($arrContextOptions));
                     $parser = simplexml_load_string($stream);
                     foreach ($parser->channel->item as $item) {
-                        $date = (string) $item->pubDate;
-                        $time = strtotime ($item->pubDate);
-                        $link = (string) $item->link;
-                        $title = (string) $item->title;
-                        $text = (string) $item->description;
-
-//                        $date = (string)$item->{$this->PublisherSettingParser($pid, 'pubdate', $item->pubDate)};
-//                        $time = strtotime($item->{$this->PublisherSettingParser($pid, 'pubdate', $item->pubDate)});
-//                        $link = (string)$item->{$this->PublisherSettingParser($pid, 'url', $item->link)};
-//                        $title = (string)$item->{$this->PublisherSettingParser($pid, 'title', $item->title)};
-//                        $text = (string)$item->{$this->PublisherSettingParser($pid, 'description', $item->description)};
+                        $date = (string) isset($pubDate_key) ? $item->$pubDate_key : $item->pubDate;
+                        $time = isset($pubDate_key) ? strtotime($item->$pubDate_key) :  strtotime($item->pubDate);
+                        $link = (string) isset($link_key) ? $item->$link_key : $item->link;
+                        $title = (string) isset($title_key) ? $item->$title_key : $item->title;
+                        $text = isset($text_key) ? $item->$text_key : $item->description;
+                        $text = (is_object($text)) ? $text[0]->__toString() : $text;
 
                         $data[] = [
                             'publisher_id' => $streams[$owner]['publisher_id'],
                             'service_id' => $feed['service_id'],
                             'timestamp' => $time,
                             'url' => $link,
-                            'title' => $title
+                            'title' => $title,
+                            'description' => $text,
                         ];
-
                         $timestamps[$time] = [
                             'publisher_id' => $streams[$owner]['publisher_id'],
                             'service_id' => $feed['service_id'],
                             'timestamp' => $time,
                             'url' => $link,
-                            'title' => $title
+                            'title' => $title,
+                            'description' => $text,
                         ];
                     }
                     echo "Feed parsed.\r\n";
@@ -157,8 +178,6 @@ class NewsController extends Controller
         echo "Dataset ready.\r\n";
         krsort($timestamps);
         echo "Dataset sorted.\r\n";
-
-//         return $timestamps;
         $this->UpdateDataSet($timestamps);
     }
 
@@ -179,9 +198,11 @@ class NewsController extends Controller
             $l = route('Public > Show > News', $item->id);
             $t = $item->title;
             $p = $item->publisher->name;
-            $class = ($c == 1) ? 'uk-text-bold' : null;
+            $class = ($c == 1) ? 'uk-text-meta uk-text-danger' : 'uk-text-meta';
+            $id = ($c == 1) ? 'realtime-headline' : null;
             $style = ($c == 1) ? 'border-right: 3px solid #4c8bf540; padding-right: 3px' : null;
-            $response .= "<li class='$class' style='$style'><a class='uk-link-reset' href='$l' target='_blank' title='$p - $t'>$t</a></li>";
+            $utm = "?utm_source=website&utm_medium=realtime&utm_campaign=default";
+            $response .= "<li id='$id' class='$class' style='$style'><a class='uk-link-reset' href='$l$utm' target='_blank' title='$p - $t'>$t</a></li>";
             $c++;
         }
         return $response;
@@ -216,7 +237,7 @@ class NewsController extends Controller
             ->groupBy('title')
             ->havingRaw('COUNT(*) > 1')
             ->get();
-        echo "Founded " . count($duplicates) . " duplicate rows ...\r\n.";
+        echo "Founded " . count($duplicates) . " duplicate rows ...\r\n";
 
         if (count($duplicates) > 0) {
             echo "Process to removing duplicate items ...\r\n";
@@ -241,13 +262,13 @@ class NewsController extends Controller
                         $index = News::find($item->id);
                         if (!is_null($index)) {
                             $index->delete();
-                            echo "id:" . $item->id . " removed.\r\n";
+//                            echo "id:" . $item->id . " removed.\r\n";
                         }
                     }
                     $c++;
                 }
             }
-            echo "Duplicate entries removed.\r\n";
+            echo "$c duplicate entries removed.\r\n";
         } else {
             echo "Process stopped due to results count.";
         }
@@ -255,7 +276,23 @@ class NewsController extends Controller
 
     public function Test()
     {
-        return $this->PublisherSettingParser(11, 'guid', false);
+        $streams = Publisher::all();
+        foreach ($streams as $stream) {
+            if (strpos($stream->avatar, 'http') !== false) {
+                $arrContextOptions=array(
+                    "ssl"=>array(
+                        "verify_peer"=>false,
+                        "verify_peer_name"=>false,
+                    ),
+                );
+                $response = file_get_contents($stream->avatar, false, stream_context_create($arrContextOptions));
+                $path = 'assets/theme/minimal/images/fav/'.time().'-'.basename($stream->avatar);
+                file_put_contents($path, $response);
+                Publisher::find($stream->id)->update([
+                    'avatar' => $path
+                ]);
+            }
+        }
     }
 
     public function LegalRules()
@@ -299,5 +336,119 @@ class NewsController extends Controller
                 $handle->save();
             }
         }
+    }
+
+    public function Cleanup($input) {
+        $characters = [
+            'ك' => 'ک',
+            'دِ' => 'د',
+            'بِ' => 'ب',
+            'زِ' => 'ز',
+            'ذِ' => 'ذ',
+            'شِ' => 'ش',
+            'سِ' => 'س',
+            'ى' => 'ی',
+            'ي' => 'ی',
+            '١' => '۱',
+            '٢' => '۲',
+            '٣' => '۳',
+            '٤' => '۴',
+            '٥' => '۵',
+            '٦' => '۶',
+            '٧' => '۷',
+            '٨' => '۸',
+            '٩' => '۹',
+            '٠' => '۰',
+        ];
+        $input = strip_tags($input);
+        $input = str_replace(array_keys($characters), array_values($characters),$input);
+        $input = str_replace(['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'], ' ', $input);
+        $input = str_replace(['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'], ' ', $input);
+        $input = str_replace(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'], ' ', $input);
+        $input = str_replace(['\r', '\r\n', PHP_EOL, '.', ',', '،', '/', '\\', ')', '(', '"', ':', ';'], ' ', $input);
+//        $input = preg_replace("/&#?[a-z0-9]{2,8};/i","",$input);
+        return $input;
+    }
+
+    public function InsertNewsTags(News $news)
+    {
+        $stopwords = file_get_contents(__DIR__.'/Helpers/fa_IR_stopwords.txt');
+        $stopwords = explode(PHP_EOL, $stopwords);
+
+        $title = $this->Cleanup($news->title);
+        $sample = $this->Cleanup($news->description);
+
+        // Remove stop words
+        foreach ($stopwords as $word) {
+            $sample = str_replace(" $word ", ' ', $sample);
+        }
+        // explode input word by word
+        $sample = explode(' ', $sample);
+        $sample = array_filter($sample, fn($value) => !is_null($value) && $value !== '' && $value !== ' ');
+        foreach ($sample as $index => $word) {
+            $sample[$index] = trim(str_replace(['\r', '\r\n', PHP_EOL, '.', ',', '،', '/', '\\', ')', '(', '"', ':', ';'], '', $word));
+        }
+        $scores = [];
+        // loop over words to calculate score
+        foreach ($sample as $word) {
+            $score = 0;
+            foreach ($sample as $index) {
+                if ($index == $word || strpos($index, $word) !== false) {
+                    $score ++;
+                }
+            }
+            if (strpos($title, $word) !== false) {
+                $score ++;
+            }
+            foreach (array_intersect(explode(' ', $title), $sample) as $index) {
+                if ($index == $word || strpos($index, $word) !== false) {
+                    $score ++;
+                }
+            }
+            $scores[$word] = $score;
+        }
+
+        // loop over words to remove scores lower than 3
+        foreach($scores as $item => $score) {
+            if ($score < 3) {
+                unset($scores[$item]);
+            }
+        }
+
+        // remove indexes with less than 3 characters
+        foreach($scores as $index => $score) {
+            // it should be 3, because some important tags like سکه & طلا wont pass.
+            if (mb_strlen($index) < 3) {
+                unset($scores[$index]);
+            }
+        }
+
+        // sort scores by score value
+        arsort($scores);
+
+        $tags = array_keys($scores);
+        $tags_bag = [];
+        foreach ($tags as $tag) {
+            $tag_exists = Tag::where('name', $tag)->first();
+            $can_insert_new_tag = (is_null($tag_exists)) ? 1 : 0 ;
+            if($can_insert_new_tag) {
+                $tmp = new Tag();
+                $tmp->name = $tag;
+                $tmp->slug = SlugService::createSlug(Tag::class, 'slug', $tag);
+                $tmp->save();
+                $tags_bag[] = $tmp->id;
+            } else {
+                $tags_bag[] = $tag_exists->id;
+            }
+        }
+        $news->tag()->sync($tags_bag);
+    }
+
+    public function TagAssistance()
+    {
+//        $news = News::latest('timestamp')->take(200)->get();
+//        foreach ($news as $news_item) {
+//            $this->InsertNewsTags($news_item);
+//        }
     }
 }
