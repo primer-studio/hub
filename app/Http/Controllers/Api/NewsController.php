@@ -24,12 +24,12 @@ class NewsController extends Controller
 
     public function Publisher($publisher_id, $count)
     {
-        if (Cache::has('gostaresh_OwnerNews')) {
-            $dataset = Cache::get('gostaresh_OwnerNews');
+        if (Cache::has("publisher-$publisher_id-OwnerNews")) {
+            $dataset = Cache::get("publisher-$publisher_id-OwnerNews");
         } else {
             $publisher = Publisher::findOrFail($publisher_id);
             $dataset = $publisher->news()->latest('timestamp')->take($count)->get();
-            $this->CacheHandler('gostaresh_OwnerNews', $dataset, 60);
+            $this->CacheHandler("publisher-$publisher_id-OwnerNews", $dataset, 60);
 
         }
         return $dataset;
