@@ -41,7 +41,7 @@ class NewsController extends Controller
     {
         echo "Fetching publishers ...\r\n";
         $streams = Publisher::all()->where('id', '!=', '1');
-//        $streams = $streams->where('id', 9);
+//        $streams = $streams->where('id', 13);
         $dataset = [];
         echo "Creating dataset ...\r\n";
         foreach ($streams as $stream) {
@@ -112,7 +112,6 @@ class NewsController extends Controller
     {
 
         $streams = ($custom_stream !== false) ? $custom_stream : $this->makeStreams();
-//         return $streams;
 
         $data = [];
         $timestamps = [];
@@ -131,13 +130,18 @@ class NewsController extends Controller
             foreach ($stream['feeds'] as $feed) {
                 echo "Parsing feed: " . $feed['url'] . " ...\r\n";
                 try {
-                    $arrContextOptions = [
-                        "ssl"=> [
-                            "verify_peer"=>false,
-                            "verify_peer_name"=>false,
-                        ]
-                    ];
-                    $stream = file_get_contents($feed['url'], false, stream_context_create($arrContextOptions));
+                    /***
+                     * the fgetcontents is old and has bugs with charsets & etc.
+                     * so fgetcontents replaced with laravel http which uses guzzleHttp client.
+                     */
+//                    $arrContextOptions = [
+//                        "ssl"=> [
+//                            "verify_peer"=>false,
+//                            "verify_peer_name"=>false,
+//                        ]
+//                    ];
+//                    $stream = file_get_contents($feed['url'], false, stream_context_create($arrContextOptions));
+                    $stream = Http::withoutVerifying()->get($feed['url'])->body();
                     $parser = simplexml_load_string($stream);
                     foreach ($parser->channel->item as $item) {
                         $date = (string) isset($pubDate_key) ? $item->$pubDate_key : $item->pubDate;

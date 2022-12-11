@@ -85,4 +85,4 @@ Route::get('/publishers-sitemap.xml', [\App\Http\Controllers\SitemapController::
 //});
 
 //Route::get('/duplicates', [\App\Http\Controllers\NewsController::class, 'RemoveDuplicates']);
-Route::get('test', [\App\Http\Controllers\TagController::class, 'DummiesDeactiveJob']);
+Route::get('test', [\App\Http\Controllers\NewsController::class, 'XMLrender']);
