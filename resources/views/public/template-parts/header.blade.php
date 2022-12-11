@@ -8,6 +8,7 @@
 <meta name="description" content="جدید ترین خبر های روز - اخبار روز ایران و جهان">
 <meta name="keywords" content="@foreach($__GLOBAL['services'] as $service) {{ "اخبار " . $service->title . "," }} @endforeach">
 <meta name="robots" content="index, follow">
+<link rel="canonical" href="{{ url()->current() }}">
 
 <meta property="og:site_name" content="{{ env('APP_NAME') }}" />
 <meta property="og:image" content="{{ asset('assets/theme/minimal/images/logo.png') }}" />
@@ -145,6 +146,10 @@
     table tbody tr td {
         padding: 3px !important;
         font-size: 13px !important;
+    }
+
+    .http-4xx {
+        filter: invert(1);
     }
     /*.tippy div div span,div,p {*/
     /*    color: #e9e9e9 !important;*/

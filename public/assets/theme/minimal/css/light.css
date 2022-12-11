@@ -46,6 +46,10 @@ body.light-mode .uk-card-default {
 body.light-mode .uk-label {
     color: white !important;
 }
+
+body.light-mode .http-4xx {
+    filter: none;
+}
 /*body.light-mode .tippy * {*/
 /*    color: #666 !important;*/
 /*}*/

@@ -1,2 +1,2 @@
 User-agent: *
-Disallow:
+Disallow: /set_dummy_tag

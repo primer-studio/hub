@@ -21,7 +21,7 @@ Route::get('/', [App\Http\Controllers\HomeController::class, 'Index'])->name('Pu
 /** ------- Service ------- **/
 Route::get('/service/{slug}', [App\Http\Controllers\ServiceController::class, 'Show'])->name('Public > Show > Service');
 
-/** ------- Service ------- **/
+/** ------- Publisher ------- **/
 Route::get('/publisher/{id}-{slug}', [App\Http\Controllers\PublisherController::class, 'Show'])->name('Public > Show > Publisher');
 
 /** ------- News ------- **/

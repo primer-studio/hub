@@ -1,4 +1,4 @@
-@if(\Request::route()->getName() == 'Public > Real time')
+@if(!is_null(\Request::route()) && \Request::route()->getName() == 'Public > Real time')
     <script>
         var intervalID = window.setInterval(getLates, 3000);
 
@@ -16,7 +16,7 @@
     </script>
 @endif
 
-@if(\Request::route()->getName() == 'Public > Index')
+@if(!is_null(\Request::route()) && \Request::route()->getName() == 'Public > Index')
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             tippy('a.news-title', {
@@ -74,7 +74,7 @@
     }
 </script>
 
-@if(\Request::route()->getName() == 'Public > Show > News')
+@if(!is_null(\Request::route()) && \Request::route()->getName() == 'Public > Show > News')
     <script>
         /**
          * Main form request handler
