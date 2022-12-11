@@ -8,9 +8,7 @@
         "routeCache": true
     },
     "cron": [
-        "* * * * * cd /var/www/html && php artisan news:update",
-        "*/2 * * * * cd /var/www/html && php artisan news:legal",
-        "0 2 * * * cd /var/www/html && php artisan tags:clean"
+        "* * * * * cd /var/www/html && php artisan news:update"
     ],
     "disks": [
         {

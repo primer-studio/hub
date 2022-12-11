@@ -41,7 +41,7 @@ class NewsController extends Controller
     {
         echo "Fetching publishers ...\r\n";
         $streams = Publisher::all()->where('id', '!=', '1');
-//        $streams = $streams->where('id', 13);
+//        $streams = $streams->where('id', 7);
         $dataset = [];
         echo "Creating dataset ...\r\n";
         foreach ($streams as $stream) {
@@ -89,7 +89,7 @@ class NewsController extends Controller
                     'url' => $content['url'],
                     'timestamp' => $content['timestamp'],
                 ]);
-                $this->InsertNewsTags($news);
+//                $this->InsertNewsTags($news);
 
             } else {
                 $duplicates_count += 1;

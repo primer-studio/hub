@@ -9,3 +9,6 @@
 
 ### 12/11/2022 [e1670751004]
 - Feeds now fetch via Guzzle.
+
+### 12/11/2022 [e1670753888]
+- Clean unnecessary jobs.
