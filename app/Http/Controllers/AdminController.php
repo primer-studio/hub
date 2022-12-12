@@ -59,7 +59,7 @@ class AdminController extends Controller
 
 
         } else {
-            return abort('cannot proccess request.');
+            return abort('cannot process request.');
         }
     }
 
@@ -88,7 +88,7 @@ class AdminController extends Controller
             session(['message' => 'Publisher updated.']);
             return back();
         } else {
-            return abort('cannot proccess request.');
+            return abort('cannot process request.');
         }
     }
 
@@ -101,15 +101,48 @@ class AdminController extends Controller
 
     public function AddService(Request $request)
     {
-        // should extends AddPublisher() method format.
+        if ($request->isMethod('get')) {
+            return view('private.service.add');
+        } elseif ($request->isMethod('post')) {
+            $request->validate([
+                'title' => 'required|min:3',
+                'active' => 'required',
+            ]);
+            $service = new Service();
+            $service->title = $request['title'];
+            $service->active = $request['active'];
+            $service->save();
+
+            session(['message' => 'Service added.']);
+            return redirect(route('Admin > Dashboard > Services > Edit', $service->id));
+        } else {
+            return abort('cannot process request.');
+        }
     }
 
     public function EditService(Request $request, $id)
     {
-        // should extends EditPublisher() method format.
+        if ($request->isMethod('get')) {
+            $service = Service::findOrFail($id);
+            return view('private.service.edit', compact(['service']));
+        } elseif ($request->isMethod('post')) {
+            $request->validate([
+                'title' => 'required|min:3',
+                'active' => 'required',
+            ]);
+            $service = Service::findOrFail($id)
+                ->update([
+                    'title' => $request['title'],
+                    'active' => $request['active']
+                ]);
+            session(['message' => 'Service updated.']);
+            return back();
+        } else {
+            return abort('cannot process request.');
+        }
     }
 
-    /** ------- Services ------- **/
+    /** ------- Tags ------- **/
     public function ManageTags()
     {
         $tags = Tag::latest('id')->where('active', 1)->paginate(200);

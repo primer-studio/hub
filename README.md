@@ -12,3 +12,6 @@
 
 ### 12/11/2022 [e1670753888]
 - Clean unnecessary jobs.
+
+### 12/12/2022 [e1670831174]
+- Service manager implemented.

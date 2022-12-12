@@ -37,7 +37,10 @@ Route::prefix('real-time')->group(function () {
 /** ------- Private ------- **/
 Route::middleware(['auth'])->group(function () {
     Route::prefix('cfx63_admin')->group(function () {
+        /** ------- Version Two ------- **/
+        // will be develope soon ...
 
+        /** ------- Version One ------- **/
         /** ------- Dashboard ------- **/
         Route::get('/', [App\Http\Controllers\AdminController::class, 'Index'])->name('Admin > Dashboard > Index');
         Route::get('/publishers', [App\Http\Controllers\AdminController::class, 'ManagePublisher'])->name('Admin > Dashboard > Publishers > Manage');
