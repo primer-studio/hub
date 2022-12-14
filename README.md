@@ -37,3 +37,7 @@
 - News page heading added.
 - Seo friendly IMG tags.
 - Footer added.
+
+### 12/14/2022 [e1671021024]
+- Publisher script changed.
+- Timestamp data route added.

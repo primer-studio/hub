@@ -81,6 +81,25 @@ Route::get('/publishers-sitemap.xml', [\App\Http\Controllers\SitemapController::
 //Route::get('/rss', 'FeedController@Index')->name('Rss');
 //Route::get('/rss/v2', 'FeedController@v2')->name('RssV2');
 
+/** ------- Static info ------- **/
+Route::get('/statics', function () {
+    $jdate = new Verta();
+    $jdate = verta();
+    $jdate = $jdate->format('%A %d %B، %Y');
+    $en = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    $fa = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+    $jdate = str_replace($en, $fa, $jdate);
+    return response()->json([
+        'epoch' => time(),
+        'date' => date('l, F d y h:i:s'),
+        'jdate' => $jdate,
+        'date_default_timezone' => [
+            date_default_timezone_get(),
+            ini_get('date.timezone')
+        ]
+    ]);
+})->name('Static > Info');
+
 
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
