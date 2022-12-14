@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-require __DIR__.'/auth.php';
+//require __DIR__.'/auth.php';
 
 /** ------- Public ------- **/
 Route::get('/', [App\Http\Controllers\HomeController::class, 'Index'])->name('Public > Index');
@@ -31,6 +31,11 @@ Route::get('/news/{id}', [App\Http\Controllers\NewsController::class, 'Show'])->
 Route::prefix('real-time')->group(function () {
     Route::get('/', [\App\Http\Controllers\HomeController::class, 'RealTime'])->name('Public > Real time');
     Route::get('/news/{order}/{count}', [\App\Http\Controllers\NewsController::class, 'RealTime'])->name('Real Time > News');
+});
+
+/** ------- Crypto data ------- **/
+Route::prefix('crypto')->group(function () {
+    Route::get('/overview', [\App\Http\Controllers\PageController::class, 'CryptoOverView'])->name('Public > Crypto > Overview');
 });
 
 
@@ -88,4 +93,4 @@ Route::get('/publishers-sitemap.xml', [\App\Http\Controllers\SitemapController::
 //});
 
 //Route::get('/duplicates', [\App\Http\Controllers\NewsController::class, 'RemoveDuplicates']);
-Route::get('test', [\App\Http\Controllers\NewsController::class, 'XMLrender']);
+//Route::get('test', [\App\Http\Controllers\NewsController::class, 'XMLrender']);

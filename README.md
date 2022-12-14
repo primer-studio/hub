@@ -15,3 +15,11 @@
 
 ### 12/12/2022 [e1670831174]
 - Service manager implemented.
+
+### 12/14/2022 [e1671008025]
+- Deployment env (liara) changes.
+- Sitemap added to robots.txt file.
+- Services sitemap date fixed.
+- Cryptocurrencies widgets & overview page added.
+- Publisher script added.
+- New publisher fav added.

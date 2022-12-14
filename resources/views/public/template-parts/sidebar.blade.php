@@ -35,3 +35,4 @@
         <img src="{{ asset('assets/advertisements/afranet.gif') }}" class="uk-border-rounded uk-animation-fade uk-margin-small-bottom" alt="ads">
     </div>
 </div>
+@include('public.components.sidebar.tradingview-badge')

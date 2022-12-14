@@ -1,2 +1,3 @@
 User-agent: *
 Disallow: /set_dummy_tag
+Sitemap: https://feedmark.ir/sitemap_index.xml

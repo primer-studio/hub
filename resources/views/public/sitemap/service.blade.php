@@ -6,7 +6,7 @@
 
     <loc>{{ urldecode(route('Public > Index')) }}</loc>
 
-    <lastmod>{{ date('Y-m-d H:i:s') }}</lastmod>
+    <lastmod>{{ date('Y-m-d\TH:i:s+00:00') }}</lastmod>
 
     <changefreq>daily</changefreq>
 
@@ -19,7 +19,7 @@
 
     <loc>{{ urldecode(route('Public > Show > Service', $service->slug)) }}</loc>
 
-    <lastmod>{{ gmdate('Y-m-d\TH:i:s+00:00', strtotime(now()->subMinutes(2))) }}</lastmod>
+    <lastmod>{{ gmdate('Y-m-d\TH:i:s+00:00', strtotime(now()->subMinutes(1))) }}</lastmod>
 
 
     <changefreq>daily</changefreq>

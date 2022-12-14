@@ -14,6 +14,10 @@
         {
           "name": "ancient-feed-disk",
           "mountTo": "storage"
+        },
+        {
+            "name": "ancient-feed-disk-assets",
+            "mountTo": "public/assets"
         }
-      ]
+    ]
 }
