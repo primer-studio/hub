@@ -11,7 +11,7 @@
             </span>
         </div>
         <div class="uk-width-1-4 uk-float-left uk-text-left">
-            <img src="/{{ $__GLOBAL['last_news'][0]->publisher->avatar }}" style="width: 20px; padding: 1px; background: white; border-radius: 3px; vertical-align: middle; margin-top: 2%;">
+            <img alt="{{ $__GLOBAL['last_news'][0]->publisher->name }}" src="/{{ $__GLOBAL['last_news'][0]->publisher->avatar }}" style="width: 20px; padding: 1px; background: white; border-radius: 3px; vertical-align: middle; margin-top: 2%;">
         </div>
     </div>
 </div>

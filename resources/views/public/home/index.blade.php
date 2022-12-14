@@ -3,6 +3,9 @@
     آخرین اخبار روز
 @endsection
 @section('content')
+    <h1 class="uk-hidden">
+        اخبار روز، اخبار ایران، آخرین اخبار، خبر امروز
+    </h1>
     @include('public.components.home.top-hits', ['hitset' => $hitset])
     @include('public.components.home.tradingview-ticker')
     @foreach($dataset as $key => $item)

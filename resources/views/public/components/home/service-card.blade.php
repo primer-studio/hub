@@ -46,6 +46,7 @@
                             $description = str_replace('<div', '<p class="tippy-desc"', $description);
                             $description = str_replace('/div>', '/p>', $description);
                             $description = str_replace('<p', '<p style="color: #fff !important" ', $description);
+                            $description = str_replace('<img', "<img alt={$item->title}", $description);
                         @endphp
                         <p class="tippy-desc">
                             {!! $description !!}

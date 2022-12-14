@@ -31,3 +31,9 @@
 ### 12/14/2022 [e1671010788]
 - Services sitemap date fixed - debugged [related:**e1671009938**].
 - News sitemap now return all news.
+
+### 12/14/2022 [e1671019429]
+- Home page heading added.
+- News page heading added.
+- Seo friendly IMG tags.
+- Footer added.

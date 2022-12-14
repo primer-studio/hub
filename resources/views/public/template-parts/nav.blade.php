@@ -47,7 +47,7 @@
         <ul class="uk-navbar-nav">
             <li class="uk-active">
                 <a onclick="switchTheme(this)">
-                    <img id="theme-switcher" class="uk-background-default uk-border-rounded uk-padding-small" src="{{ asset('assets/theme/minimal/images/sunny-outline.png') }}" alt="">
+                    <img alt="theme-switcher" id="theme-switcher" class="uk-background-default uk-border-rounded uk-padding-small" src="{{ asset('assets/theme/minimal/images/sunny-outline.png') }}" alt="">
                 </a>
             </li>
         </ul>

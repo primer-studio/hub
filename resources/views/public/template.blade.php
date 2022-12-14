@@ -24,7 +24,8 @@
         </div>
         @endif
     </div>
-        @include('public.template-parts.mobile-sticky')
-        @include('public.template-parts.scripts')
+    @include('public.template-parts.footer')
+    @include('public.template-parts.mobile-sticky')
+    @include('public.template-parts.scripts')
 </body>
 </html>
