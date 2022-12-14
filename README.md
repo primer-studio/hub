@@ -23,3 +23,7 @@
 - Cryptocurrencies widgets & overview page added.
 - Publisher script added.
 - New publisher fav added.
+
+### 12/14/2022 [e1671009938]
+- Services sitemap date fixed - debug stage.
+- Authentication routes now protected.

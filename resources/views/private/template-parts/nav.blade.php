@@ -41,6 +41,14 @@
                         </a>
                     </p>
                 </div>
+                <div>
+                    <p uk-tooltip="title: Logout; pos: top">
+                        <a href="{{ route('logout') }}.php" class="uk-link-reset">
+                            <span uk-icon="sign-out"></span>
+                            <span class="uk-visible@m">&nbsp;Logout!</span>
+                        </a>
+                    </p>
+                </div>
             </div>
         </div>
     </div>

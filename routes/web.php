@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//require __DIR__.'/auth.php';
+require __DIR__.'/auth.php';
 
 /** ------- Public ------- **/
 Route::get('/', [App\Http\Controllers\HomeController::class, 'Index'])->name('Public > Index');
