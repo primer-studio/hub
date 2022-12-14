@@ -27,3 +27,7 @@
 ### 12/14/2022 [e1671009938]
 - Services sitemap date fixed - debug stage.
 - Authentication routes now protected.
+
+### 12/14/2022 [e1671010788]
+- Services sitemap date fixed - debugged [related:**e1671009938**].
+- News sitemap now return all news.

@@ -17,7 +17,7 @@ class SitemapController extends Controller
     }
 
     public function News() {
-        $news = News::where('publisher_id', '!=', 1)->orderByDesc('timestamp')->take(300)->get();
+        $news = News::where('publisher_id', '!=', 1)->orderByDesc('timestamp')->get();
         return response()
             ->view('public.sitemap.news', compact('news'))
             ->header('Content-Type','text/xml');
