@@ -49,6 +49,9 @@
 ### 12/19/2022 [e1671455016]
 - Advertise sockets added.
 
+### 12/19/2022 [e1671456293]
+- Advertise sockets change.
+
 
 
 

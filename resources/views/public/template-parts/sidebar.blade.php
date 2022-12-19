@@ -28,12 +28,11 @@
         <img src="{{ asset('assets/theme/minimal/images/realtime-news-f3.png') }}" class="uk-border-rounded uk-animation-fade uk-margin-small-bottom" alt="پخش زنده اخبار">
     </a>
 </div>
-<div class="uk-card uk-card-default uk-card-medium uk-card-body uk-border-rounded uk-margin-small-bottom opacity-90">
+<div class="uk-background-default uk-margin-small-bottom uk-padding-small uk-border-rounded">
     <span class="uk-text-meta uk-display-inline" style="color:#999;">ads</span>
-    <div class="uk-container uk-margin-small uk-margin-medium-top">
-        <div id="pos-article-display-77812" id="socket-sidebar"></div>
-    </div>
-</div><div class="uk-card uk-card-default uk-card-medium uk-card-body uk-border-rounded uk-margin-small-bottom opacity-90">
+    <div id="pos-article-display-77812" class="advs-socket socket-sidebar"></div>
+</div>
+<div class="uk-card uk-card-default uk-card-medium uk-card-body uk-border-rounded uk-margin-small-bottom opacity-90">
     <span class="uk-text-meta uk-display-inline" style="color:#999;">ads</span>
     <div class="uk-container uk-margin-small uk-margin-medium-top">
         <img src="{{ asset('assets/advertisements/jabama.gif') }}" class="uk-border-rounded uk-animation-fade uk-margin-small-bottom" alt="ads">
