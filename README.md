@@ -41,3 +41,11 @@
 ### 12/14/2022 [e1671021024]
 - Publisher script changed.
 - Timestamp data route added.
+
+### 12/19/2022 [e1671449733]
+- Publisher script changed.
+- Other changes need refactoring yet.
+
+
+
+

@@ -13,4 +13,9 @@ class TestController extends Controller
         $value = $client->get('foo');
         return $value;
     }
+
+    public function Chat()
+    {
+        return 'will be chatroom here ...';
+    }
 }

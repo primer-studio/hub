@@ -212,8 +212,9 @@ class NewsController extends Controller
         return $response;
     }
 
-    public function RemoveDuplicates()
+    public function RemoveDuplicatesv1()
     {
+        ini_set('memory_limit', '999999999999999M');
         /**
          * query: SELECT title, publisher_id, timestamp, COUNT(*) c FROM `news` GROUP BY title HAVING c > 1 ORDER BY timestamp DESC
          * note: this query wont work till the mysql engine 'strict' => true, changes to false in config/database.php
@@ -258,6 +259,7 @@ class NewsController extends Controller
                     }
                 }
             }
+            $count = 0;
             foreach ($should_delete as $news) {
                 $c = 1;
                 foreach ($news as $item) {
@@ -266,16 +268,93 @@ class NewsController extends Controller
                         $index = News::find($item->id);
                         if (!is_null($index)) {
                             $index->delete();
+                            $count ++;
 //                            echo "id:" . $item->id . " removed.\r\n";
                         }
                     }
                     $c++;
                 }
             }
-            echo "$c duplicate entries removed.\r\n";
+            echo "$count duplicate entries removed.\r\n";
         } else {
             echo "Process stopped due to results count.";
         }
+    }
+
+    public function RemoveDuplicatesV2()
+    {
+        echo "<pre>";
+//       $dups = DB::select("SELECT url, title FROM news group by url, title having count(*) >= 2");
+        $duplicates = DB::table('news')
+            ->select('title', 'url', 'publisher_id')
+            ->groupBy('title', 'url', 'publisher_id')
+            ->havingRaw('COUNT(*) > 1')
+            ->get();
+        echo $duplicates->count() . " items has been detected as duplicate <br/>\r\n";
+        foreach ($duplicates as $dup) {
+            $q = News::where([
+                'title' => $dup->title,
+                'publisher_id' => $dup->publisher_id,
+            ])->get();
+            echo "{$dup->title} has " . $q->count() . " duplicates.<br/>\r\n";
+            $ids = [];
+            $hits = [];
+            foreach ($q as $item) {
+                $ids[] = $item->id;
+                $hits[] = $item->hits;
+            }
+            $should_keep = [
+                'id' => min($ids),
+                'hits' => max($hits)
+            ];
+
+            foreach ($q as $item) {
+                if ($item->id != $should_keep['id']) {
+                    echo "{$item->id} is duplicate from " . $should_keep['id'] . " ...... deleting ...<br/>\r\n";
+                    News::where('id', $item->id)->first()->delete();
+                } else {
+                    News::where('id', $should_keep['id'])->first()->update(['hits', $should_keep['hits']]);
+                }
+            }
+       }
+    }
+
+    public function RemoveDuplicatesv3()
+    {
+        $duplicates = DB::table('news')
+            ->select('title', 'timestamp', 'publisher_id')
+            ->groupBy('title', 'timestamp', 'publisher_id')
+            ->havingRaw('COUNT(*) > 1')
+            ->get();
+//        dd($duplicates);
+        foreach ($duplicates as $duplicate) {
+            $q = News::where([
+                'title' => $duplicate->title,
+                'timestamp' => $duplicate->timestamp,
+                'publisher_id' => $duplicate->publisher_id
+            ])
+            ->orderBy('id')
+            ->get()
+            ->skip(1);
+            foreach ($q as $qitem) {
+                News::destroy($qitem->id);
+            }
+        }
+    }
+
+    public function RemoveDuplicates()
+    {
+//        ini_set('memory_limit', '999999999999999M');
+//        ini_set('max_execution_time', '-1');
+//        $publishers = Publisher::where('id', 19)->get();
+//        $items = [];
+//        foreach ($publishers as $publisher) {
+//            $q = News::where('publisher_id', $publisher->id)
+//                ->withTrashed()
+//                ->pluck('id', 'title');
+//            dd($q);
+//        }
+//        return $items;
     }
 
     public function Test()

@@ -61,6 +61,7 @@ Route::middleware(['auth'])->group(function () {
 
         /** ------- JOBS ------- **/
         Route::get('/update', [App\Http\Controllers\NewsController::class, 'XMLrender'])->name('Jobs > Update > News');
+        Route::get('/remove_duplicates', [App\Http\Controllers\NewsController::class, 'RemoveDuplicates'])->name('Jobs > Duplicate > News > Remove');
 
         /** ------- Tests ------- **/
 
@@ -99,17 +100,3 @@ Route::get('/statics', function () {
         ]
     ]);
 })->name('Static > Info');
-
-
-// Route::get('/dashboard', function () {
-//     return view('dashboard');
-// })->middleware(['auth'])->name('dashboard');
-
-//Route::get('sample-test', function() {
-//    $stream = file_get_contents('https://www.yjc.news/fa/rss/5/99');
-//    $parser = simplexml_load_string($stream);
-//    return dd($parser);
-//});
-
-//Route::get('/duplicates', [\App\Http\Controllers\NewsController::class, 'RemoveDuplicates']);
-//Route::get('test', [\App\Http\Controllers\NewsController::class, 'XMLrender']);
