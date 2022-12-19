@@ -31,6 +31,11 @@
 <div class="uk-card uk-card-default uk-card-medium uk-card-body uk-border-rounded uk-margin-small-bottom opacity-90">
     <span class="uk-text-meta uk-display-inline" style="color:#999;">ads</span>
     <div class="uk-container uk-margin-small uk-margin-medium-top">
+        <div id="pos-article-display-77812" id="socket-sidebar"></div>
+    </div>
+</div><div class="uk-card uk-card-default uk-card-medium uk-card-body uk-border-rounded uk-margin-small-bottom opacity-90">
+    <span class="uk-text-meta uk-display-inline" style="color:#999;">ads</span>
+    <div class="uk-container uk-margin-small uk-margin-medium-top">
         <img src="{{ asset('assets/advertisements/jabama.gif') }}" class="uk-border-rounded uk-animation-fade uk-margin-small-bottom" alt="ads">
         <img src="{{ asset('assets/advertisements/afranet.gif') }}" class="uk-border-rounded uk-animation-fade uk-margin-small-bottom" alt="ads">
     </div>

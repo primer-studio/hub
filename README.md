@@ -46,6 +46,9 @@
 - Publisher script changed.
 - Other changes need refactoring yet.
 
+### 12/19/2022 [e1671455016]
+- Advertise sockets added.
+
 
 
 
