@@ -190,7 +190,15 @@ class NewsController extends Controller
         $news = News::FindOrFail($id);
         $news->hits = $news->hits + 1;
         $news->save();
-        return view('public.news.iframe', compact(['news']));
+        return view('public.news.iframe-parent', compact(['news']));
+    }
+
+    public function DummyFrame($id)
+    {
+        $news = News::FindOrFail($id);
+        $news->hits = $news->hits + 1;
+        $news->save();
+        return view('public.news.standalone-iframe', compact(['news']));
     }
 
     public function RealTime(Request $request, $order, $count)

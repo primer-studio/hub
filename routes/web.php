@@ -26,6 +26,7 @@ Route::get('/publisher/{id}-{slug}', [App\Http\Controllers\PublisherController::
 
 /** ------- News ------- **/
 Route::get('/news/{id}', [App\Http\Controllers\NewsController::class, 'Show'])->name('Public > Show > News');
+Route::get('/news/frame/{id}', [App\Http\Controllers\NewsController::class, 'DummyFrame'])->name('Public > Show > News > Frame');
 
 /** ------- Real time ------- **/
 Route::prefix('real-time')->group(function () {

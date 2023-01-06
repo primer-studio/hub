@@ -2,7 +2,7 @@
     $routeName = Route::CurrentRouteName();
 @endphp
 <!DOCTYPE html>
-<html dir="rtl" lang="fa">
+<html dir="rtl" lang="fa-IR">
 <head>
 @include('public.template-parts.header')
 </head>
